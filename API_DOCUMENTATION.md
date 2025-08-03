@@ -1,6 +1,104 @@
 # Social Media REST API Documentation
 
+## Getting Started
+
+### Prerequisites
+
+- Python 3.7 or higher
+- pip (Python package manager)
+
+### Installation & Setup
+
+1. **Clone or navigate to the project directory:**
+
+   ```bash
+   cd flask-social-api
+   ```
+
+2. **Create a virtual environment (recommended):**
+
+   ```bash
+   python -m venv venv
+   ```
+
+3. **Activate the virtual environment:**
+
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+   - On macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Running the Application
+
+1. **Start the Flask development server:**
+
+   ```bash
+   python main.py
+   ```
+
+2. **The API will be available at:**
+   ```
+   http://127.0.0.1:5000/
+   ```
+
+### Database Setup
+
+The application uses SQLite by default and will automatically:
+
+- Create the database file (`instance/database.db`) on first run
+- Initialize all required tables
+- Populate the database with sample data including:
+  - **Sample Users:**
+    - alice (password: password1)
+    - bob (password: password2)
+    - carol (password: password3)
+    - dave (password: password4)
+  - **Sample Posts:** Various posts from different users
+  - **Sample Follows:** Users following each other
+  - **Sample Likes and Comments:** Interactions between users
+
+### Environment Configuration (Optional)
+
+You can customize the application by setting these environment variables:
+
+```bash
+export SECRET_KEY="your-secret-key"
+export JWT_SECRET_KEY="your-jwt-secret"
+export DATABASE_URL="sqlite:///your-database.db"
+```
+
+### Testing the API
+
+Once the server is running, you can test the root endpoint:
+
+```bash
+curl http://127.0.0.1:5000/
+```
+
+Expected response:
+
+```json
+{
+  "message": "Welcome to the Social Media REST API.",
+  "docs": "See /api or /api/auth for available endpoints."
+}
+```
+
+---
+
+## API Endpoints
+
 Base URL:
+
 ```
 http://127.0.0.1:5000/
 ```
@@ -10,6 +108,7 @@ http://127.0.0.1:5000/
 ## Authentication
 
 ### Register a New User
+
 - **Endpoint:** `POST /api/auth/register`
 - **Request Body:**
   ```json
@@ -27,6 +126,7 @@ http://127.0.0.1:5000/
   - `400 Bad Request` with validation errors
 
 **Example (curl):**
+
 ```sh
 curl -X POST http://127.0.0.1:5000/api/auth/register \
   -H "Content-Type: application/json" \
@@ -36,6 +136,7 @@ curl -X POST http://127.0.0.1:5000/api/auth/register \
 ---
 
 ### Login
+
 - **Endpoint:** `POST /api/auth/login`
 - **Request Body:**
   ```json
@@ -60,6 +161,7 @@ curl -X POST http://127.0.0.1:5000/api/auth/register \
   - `401 Unauthorized` if credentials are invalid
 
 **Example (curl):**
+
 ```sh
 curl -X POST http://127.0.0.1:5000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -71,6 +173,7 @@ curl -X POST http://127.0.0.1:5000/api/auth/login \
 ## User Profile
 
 ### Get User Profile
+
 - **Endpoint:** `GET /api/users/<user_id>`
 - **Response:**
   ```json
@@ -87,6 +190,7 @@ curl -X POST http://127.0.0.1:5000/api/auth/login \
   ```
 
 **Example (curl):**
+
 ```sh
 curl http://127.0.0.1:5000/api/users/1
 ```
@@ -94,6 +198,7 @@ curl http://127.0.0.1:5000/api/users/1
 ---
 
 ### Update Your Profile
+
 - **Endpoint:** `PUT /api/users/<user_id>`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Request Body:**
@@ -109,6 +214,7 @@ curl http://127.0.0.1:5000/api/users/1
   ```
 
 **Example (curl):**
+
 ```sh
 curl -X PUT http://127.0.0.1:5000/api/users/1 \
   -H "Authorization: Bearer <JWT_TOKEN>" \
@@ -121,6 +227,7 @@ curl -X PUT http://127.0.0.1:5000/api/users/1 \
 ## Posts
 
 ### Create a Post
+
 - **Endpoint:** `POST /api/posts`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Request Body:**
@@ -136,6 +243,7 @@ curl -X PUT http://127.0.0.1:5000/api/users/1 \
   ```
 
 **Example (curl):**
+
 ```sh
 curl -X POST http://127.0.0.1:5000/api/posts \
   -H "Authorization: Bearer <JWT_TOKEN>" \
@@ -146,6 +254,7 @@ curl -X POST http://127.0.0.1:5000/api/posts \
 ---
 
 ### Get a Post
+
 - **Endpoint:** `GET /api/posts/<post_id>`
 - **Response:**
   ```json
@@ -161,6 +270,7 @@ curl -X POST http://127.0.0.1:5000/api/posts \
   ```
 
 **Example (curl):**
+
 ```sh
 curl http://127.0.0.1:5000/api/posts/10
 ```
@@ -168,6 +278,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ---
 
 ### Update a Post
+
 - **Endpoint:** `PUT /api/posts/<post_id>`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Request Body:** (any fields to update)
@@ -185,6 +296,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ---
 
 ### Delete a Post
+
 - **Endpoint:** `DELETE /api/posts/<post_id>`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Response:**
@@ -197,6 +309,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ## Likes
 
 ### Like a Post
+
 - **Endpoint:** `POST /api/posts/<post_id>/like`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Response:**
@@ -207,6 +320,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ---
 
 ### Unlike a Post
+
 - **Endpoint:** `POST /api/posts/<post_id>/unlike`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Response:**
@@ -219,6 +333,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ## Comments
 
 ### Add a Comment
+
 - **Endpoint:** `POST /api/posts/<post_id>/comments`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Request Body:**
@@ -233,6 +348,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ---
 
 ### Get Comments for a Post
+
 - **Endpoint:** `GET /api/posts/<post_id>/comments`
 - **Response:**
   ```json
@@ -251,6 +367,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ## Follow/Unfollow
 
 ### Follow a User
+
 - **Endpoint:** `POST /api/users/<user_id>/follow`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Response:**
@@ -261,6 +378,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ---
 
 ### Unfollow a User
+
 - **Endpoint:** `POST /api/users/<user_id>/unfollow`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Response:**
@@ -273,6 +391,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ## Feed
 
 ### Get Your Feed
+
 - **Endpoint:** `GET /api/feed`
 - **Headers:** `Authorization: Bearer <JWT_TOKEN>`
 - **Response:**
@@ -306,6 +425,7 @@ curl http://127.0.0.1:5000/api/posts/10
 ---
 
 ## Notes
+
 - All endpoints that modify or access user-specific data require the `Authorization: Bearer <JWT_TOKEN>` header.
 - Use the JWT token received from the login endpoint for all protected routes.
 - All request and response bodies are in JSON format.
